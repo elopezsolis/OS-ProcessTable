@@ -111,5 +111,12 @@ public class Process {
                 Integer.toHexString(registers[4]),Integer.toHexString(registers[5]));
         return str;
     }
+    public boolean equals(Process p ){
+        return (this.usr == p.usr) && (this.pid == p.pid) && (this.program == p.program)
+                && (this.status == p.status) && (this.registers[0] == p.registers[0]) &&
+                (this.registers[1] == p.registers[1]) && (this.registers[2] == p.registers[2]) &&
+                (this.registers[3] == p.registers[3]) && (this.registers[4] == p.registers[4]) && (this.registers[5] == p.registers[5]);
+    }
+
 
 }

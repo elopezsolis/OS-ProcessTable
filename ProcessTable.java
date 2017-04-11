@@ -8,10 +8,9 @@ import java.util.Stack;
 public class ProcessTable {
     public static void main(String[] args){
         ProcessTable pt = new ProcessTable();
-        System.out.println(pt.toString());
+//        System.out.println(pt.toString());
         pt.Fork();
         System.out.println(pt.toString());
-
     }
     /**
      * Process Table
@@ -39,16 +38,54 @@ public class ProcessTable {
         Process temp = new Process(pid,"init","root",0,tempReg);
         table.add(temp);
         this.CPU = temp.getRegisters();
-        this.runningProcess = temp;
-
+        this.runningProcess = new Process(temp);
     }
+
+    /**
+     * This method makes a copy of the currently running process with a new status 1 (ready) and a
+     new unique pid. The program, user, and register contents are the same as the running process
+     */
     public void Fork(){
         Process temp  = new Process(this.runningProcess);
         temp.setStatus(1);
         this.pid++;
         temp.setPid(this.pid);
         this.table.add(temp);
+    }
 
+    /**
+     * This method kills the process with the specified process id only if either the currently
+     running process has user root or it is the same user as the process being killed.
+     */
+//    public void Kill(){
+//        bool allow = false;
+//        if(this.runningProcess.getUser() == "root"){
+//            allow = true;
+//        }
+//        table.eq
+//
+//
+//    }
+
+    /**
+     * Finds the Process in the Process Table
+     * @param temp the Process to find
+     * @return the index of the process temp, or -1 if its not found inside the Process Table
+     */
+    public int  find(Process temp){
+
+        boolean found = false;
+        int i =0;
+        while(!found && i < table.size()) {
+            if(temp.equals(table.get(i)))
+                found = true;
+            else
+                i ++;
+        }
+        if(found)
+            return i;
+        else
+            return -1;
     }
 
     public String toString(){
