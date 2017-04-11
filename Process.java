@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Stack;
 
 /**
@@ -16,6 +17,14 @@ public class Process {
         this.usr = "l";
         this.status = 1;
         registers = new int[6];
+    }
+    public Process(Process p){
+        this.pid = p.pid;
+        this.program = p.program;
+        this.usr = p.usr;
+        this.status = p.status;
+        registers = p.registers;
+
     }
     public Process(int newPid, String program, String user, int status, int[] newRegisters){
         this.pid = newPid;

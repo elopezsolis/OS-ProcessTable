@@ -17,21 +17,23 @@ public class ProcessTable {
      * Process Table
      * Structure contains the Process Table of the CPU
      */
-    ArrayList<Process> table = new ArrayList<Process>();
+    private ArrayList<Process> table;
     /**
      * Contains the contents of the CPU
      */
-    int[] CPU  = new int[6];
+    private int[] CPU  = new int[6];
     /**
      * Contains the process that is running
      */
-    Process runningProcess;
+    private Process runningProcess;
 
     /**
      * Keeps the number of processes running
      */
     private int pid;
+
     public ProcessTable(){
+        this.table = new ArrayList<>();
         int[] tempReg = {1,2,3,4,5,6};
         pid = 0;
         Process temp = new Process(pid,"init","root",0,tempReg);
@@ -40,12 +42,9 @@ public class ProcessTable {
         this.runningProcess = temp;
 
     }
-    public Process getRunningProcess(){
-        return runningProcess;
-    }
     public void Fork(){
-        Process temp  = getRunningProcess();
-        temp.setStatus(4);
+        Process temp  = new Process(this.runningProcess);
+        temp.setStatus(1);
         this.pid++;
         temp.setPid(this.pid);
         this.table.add(temp);
