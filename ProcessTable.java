@@ -8,8 +8,11 @@ import java.util.Stack;
 public class ProcessTable {
     public static void main(String[] args){
         ProcessTable pt = new ProcessTable();
-//        System.out.println(pt.toString());
-        pt.Fork();
+//        pt.Fork();
+//        int[] reg = {1,2,3,4,5,6};
+//        pt.table.add(new Process(3,"init","user",0,reg));
+        System.out.println(pt.toString());
+        pt.Kill(3);
         System.out.println(pt.toString());
     }
     /**
@@ -54,18 +57,32 @@ public class ProcessTable {
     }
 
     /**
-     * This method kills the process with the specified process id only if either the currently
-     running process has user root or it is the same user as the process being killed.
+     * This method kills the process with the specified process id only if the currently running process
+     * - has user set as "root" or
+     * - has the same user set as the process being killed.
+     * @param pidToKill
      */
-//    public void Kill(){
-//        bool allow = false;
-//        if(this.runningProcess.getUser() == "root"){
-//            allow = true;
-//        }
-//        table.eq
-//
-//
-//    }
+    public void Kill(int pidToKill){
+        boolean allow = false;
+        if(this.runningProcess.getUser() == "root"){
+            allow = true;
+        }
+        int i =0;
+        boolean found= false;
+        while(!found && i < table.size()){
+            if(pidToKill== table.get(i).getPid()) {
+                found = true;
+                i--;
+            }
+            i++;
+        }
+        if(i < table.size() && table.get(i).getUser() == this.runningProcess.getUser())
+            allow = true;
+        if(allow && found)
+            table.remove(i);
+
+
+    }
 
     /**
      * Finds the Process in the Process Table
