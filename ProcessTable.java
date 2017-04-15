@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * Created by Erick on 4/8/2017.
@@ -9,24 +10,41 @@ import java.util.Random;
 public class ProcessTable {
     public static void main(String[] args){
         ProcessTable pt = new ProcessTable();
-        pt.Fork();
-        int[] reg = pt.getRandomArray();
-        pt.table.add(new Process(3,"init","user",1,reg));
-        reg = pt.getRandomArray();
-        pt.table.add(new Process(4,"init","user",1,reg));
-        pt.Print();
+        Scanner input = new Scanner(System.in);
+        while(true){
+            String str = input.next();
+            switch (str){
+                case("fork"):
+                    pt.Fork();
+                    break;
+                case("kill"):
+                    int temp = input.nextInt();
+                    pt.Kill(temp);
+                    break;
+                case("execve"):
+                    String newProgram = input.next();
+                    String newUser = input.next();
+                    pt.Exec(newUser,newProgram);
+                    break;
+                case("block"):
+                    pt.Block();
+                    break;
+                case("yield"):
+                    pt.Yield();
+                    break;
+                case("exit"):
+                    pt.Exit();
+                    break;
+                case("print"):
+                    pt.Print();
+                    break;
+                case("unblock"):
+                    int tempPid = input.nextInt();
+                    pt.Unblock(tempPid);
+                    break;
+            }
+        }
 
-
-//        pt.CPU = pt.getRandomArray();
-//        System.arraycopy(pt.getRandomArray(),0,pt.CPU,0,6);
-//        System.out.println(pt.toString());
-//        pt.Block();
-
-//        pt.Kill(1);
-//        pt.Yield();
-//        pt.Exit();
-//        pt.Unblock(0);
-        pt.Print();
     }
     /**
      * Process Table
@@ -80,9 +98,10 @@ public class ProcessTable {
 
     }
     public void Yield(){
-        this.runningProcess.setStatus(1);
         this.runningProcess.setRegisters(this.CPU);
-        this.runningProcess = this.getRandom();
+        Process temp  = this.getRandom();
+        this.runningProcess.setStatus(1);
+        this.runningProcess = temp;
         System.arraycopy(this.runningProcess.getRegisters(),0,this.CPU,0,6);
         this.runningProcess.setStatus(0);
     }
@@ -94,6 +113,15 @@ public class ProcessTable {
     }
     public void Print(){
         System.out.println(this.toString());
+    }
+    public void Exec(String newUser,String newProgram){
+        if(this.runningProcess.getUser().equals("root") || this.runningProcess.getUser().equals(newUser)){
+            this.runningProcess.setUser(newUser);
+            this.runningProcess.setRegisters(this.getRandomArray());
+            this.runningProcess.setProgram(newProgram);
+            System.arraycopy(this.runningProcess.getRegisters(),0,this.CPU,0,6);
+        }
+
     }
 
     /**
@@ -133,7 +161,6 @@ public class ProcessTable {
      */
     public Process getRandom(){
         ArrayList<Process> temp = new ArrayList<>();
-
         for(int index =0;index< this.table.size();index++){
             if(this.table.get(index).getStatus() == 1)
                 temp.add(table.get(index));
