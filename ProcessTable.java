@@ -21,9 +21,11 @@ public class ProcessTable {
 //        System.arraycopy(pt.getRandomArray(),0,pt.CPU,0,6);
 //        System.out.println(pt.toString());
 //        pt.Block();
+
 //        pt.Kill(1);
 //        pt.Yield();
 //        pt.Exit();
+//        pt.Unblock(0);
         pt.Print();
     }
     /**
@@ -93,10 +95,19 @@ public class ProcessTable {
     public void Print(){
         System.out.println(this.toString());
     }
+
+    /**
+     * Changes the PID to (1) - Ready - from (2) - Blocked
+     * In order to change the PID, the PID has to be found and the process is Blocked
+     * @param pidToUnblock - the PID to unblock
+     */
     public void Unblock(int pidToUnblock){
-
-
+        int index = find(pidToUnblock);
+        boolean allow = index >=0 && this.table.get(index).getStatus() == 2 ;
+        if(allow)
+            this.table.get(index).setStatus(1);
     }
+
     public int find (int pid){
         int i =0;
         boolean found= false;
