@@ -106,7 +106,7 @@ public class Process {
 
     public String toString(){
         String str;
-        str = String.format("%3d %11s %9s %7d %10s %10s %10s %10s %10s %10s",
+        str = String.format("%3d %11s %9s %7d 0x%8s 0x%8s 0x%8s 0x%8s 0x%8s 0x%8s",
                 this.pid,this.program,this.usr,this.status,Integer.toHexString(registers[0]),
                 Integer.toHexString(registers[1]),Integer.toHexString(registers[2]),Integer.toHexString(registers[3]),
                 Integer.toHexString(registers[4]),Integer.toHexString(registers[5]));

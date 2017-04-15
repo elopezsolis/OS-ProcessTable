@@ -227,13 +227,8 @@ public class ProcessTable {
     }
 
     public String toString(){
-//        String[] tempAr = new String[6];
-//        for (int i = 0; i < tempAr.length;i++){
-//            tempAr[i] = Integer.toHexString(this.CPU[i]);
-//            tempAr[i].toUpperCase();
-//        }
-//        Arrays.toString(tempAr);
-        String str = String.format("CPU:\n PC = %10s SP = %10s\n R0 = %10s R1 = %10s\n R2 = %10s R3 = %10s\n",
+
+        String str = String.format("CPU:\n PC = 0x%8s SP = 0x%8s\n R0 = 0x%8s R1 = 0x%8s\n R2 = 0x%8s R3 = 0x%8s\n",
                 Integer.toHexString(this.CPU[0]),Integer.toHexString(this.CPU[1]),Integer.toHexString(this.CPU[2]),
                 Integer.toHexString(this.CPU[3]),Integer.toHexString(this.CPU[4]),Integer.toHexString(this.CPU[5])) ;
         str = str + "\nProcess Table:\n" + (new Process()).header;
