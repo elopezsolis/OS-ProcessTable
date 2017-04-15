@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -9,12 +10,21 @@ public class ProcessTable {
     public static void main(String[] args){
         ProcessTable pt = new ProcessTable();
         pt.Fork();
-        int[] reg = {1,2,3,4,5,6};
+        int[] reg = pt.getRandomArray();
         pt.table.add(new Process(3,"init","user",1,reg));
+        reg = pt.getRandomArray();
+        pt.table.add(new Process(4,"init","user",1,reg));
+        pt.Print();
+
+
+//        pt.CPU = pt.getRandomArray();
+//        System.arraycopy(pt.getRandomArray(),0,pt.CPU,0,6);
 //        System.out.println(pt.toString());
-//        pt.Kill(3);
-        System.out.println(pt.toString());
-        System.out.println(pt.getRandom());
+//        pt.Block();
+//        pt.Kill(1);
+//        pt.Yield();
+//        pt.Exit();
+        pt.Print();
     }
     /**
      * Process Table
@@ -26,7 +36,7 @@ public class ProcessTable {
      */
     private int[] CPU  = new int[6];
     /**
-     * Contains the process that is running
+     * Contains the process index that is running
      */
     private Process runningProcess;
 
@@ -37,17 +47,18 @@ public class ProcessTable {
 
     public ProcessTable(){
         this.table = new ArrayList<>();
-        int[] tempReg = {1,2,3,4,5,6};
+        int[] tempReg = new int[6];
+        System.arraycopy(this.getRandomArray(),0,tempReg,0,6);
         pid = 0;
         Process temp = new Process(pid,"init","root",0,tempReg);
         table.add(temp);
-        this.CPU = temp.getRegisters();
+        System.arraycopy(temp.getRegisters(),0,this.CPU,0,6);
         this.runningProcess = temp;
     }
 
     /**
      * This method makes a copy of the currently running process with a new status 1 (ready) and a
-     * new unique pid. The program, user, and register contents are the same as the running process
+     * new unique pid. The program, user, and register content s are the same as the running process
      */
     public void Fork(){
         Process temp  = new Process(this.runningProcess);
@@ -57,10 +68,49 @@ public class ProcessTable {
         this.table.add(temp);
     }
 
-    public void yield(){
+    public void Block(){
         this.runningProcess.setStatus(2);
-        
+        this.runningProcess.setRegisters(this.CPU);
+        this.runningProcess = this.getRandom();
+        System.arraycopy(this.runningProcess.getRegisters(),0,this.CPU,0,6);
+        this.runningProcess.setStatus(0);
 
+
+    }
+    public void Yield(){
+        this.runningProcess.setStatus(1);
+        this.runningProcess.setRegisters(this.CPU);
+        this.runningProcess = this.getRandom();
+        System.arraycopy(this.runningProcess.getRegisters(),0,this.CPU,0,6);
+        this.runningProcess.setStatus(0);
+    }
+    public void Exit(){
+        table.remove(this.runningProcess);
+        this.runningProcess = this.getRandom();
+        System.arraycopy(this.runningProcess.getRegisters(),0,this.CPU,0,6);
+        this.runningProcess.setStatus(0);
+    }
+    public void Print(){
+        System.out.println(this.toString());
+    }
+    public void Unblock(int pidToUnblock){
+
+
+    }
+    public int find (int pid){
+        int i =0;
+        boolean found= false;
+        while(!found && i < table.size()){
+            if(pid== table.get(i).getPid()) {
+                found = true;
+                i--;
+            }
+            i++;
+        }
+        if(i == table.size())
+            return -1;
+        else
+            return i;
     }
 
     /**
@@ -75,13 +125,26 @@ public class ProcessTable {
 
         for(int index =0;index< this.table.size();index++){
             if(this.table.get(index).getStatus() == 1)
-                temp.add(new Process(table.get(index)));
+                temp.add(table.get(index));
         }
-        System.out.println("Temp : \n" + temp.toString());
         Random r = new Random();
         int i = r.nextInt(temp.size());
         return temp.get(i);
 
+    }
+    public int[] getRandomArray(){
+        Random ran = new Random();
+        int maximum = 911111111;
+        int min = 879854396;
+        int range = maximum - min + 1;
+        int[] ar = new int[6];
+        ar[0] = ran.nextInt(range) + min;
+        ar[1] = ran.nextInt(range) + min;
+        ar[2] = ran.nextInt(range) + min;
+        ar[3] = ran.nextInt(range) + min;
+        ar[4] = ran.nextInt(range) + min;
+        ar[5] = ran.nextInt(range) + min;
+        return ar;
     }
 
     /**
@@ -95,21 +158,13 @@ public class ProcessTable {
         if(this.runningProcess.getUser().equals("root")){
             allow = true;
         }
-        int i =0;
-        boolean found= false;
-        while(!found && i < table.size()){
-            if(pidToKill== table.get(i).getPid()) {
-                found = true;
-                i--;
-            }
-            i++;
-        }
-        if(i < table.size() && table.get(i).getUser().equals(this.runningProcess.getUser()))
+        int index = this.find(pidToKill);
+
+        boolean found=  index >= 0;
+        if(found && table.get(index).getUser().equals(this.runningProcess.getUser()))
             allow = true;
         if(allow && found)
-            table.remove(i);
-
-
+            table.remove(index);
     }
 
     /**
@@ -134,6 +189,12 @@ public class ProcessTable {
     }
 
     public String toString(){
+//        String[] tempAr = new String[6];
+//        for (int i = 0; i < tempAr.length;i++){
+//            tempAr[i] = Integer.toHexString(this.CPU[i]);
+//            tempAr[i].toUpperCase();
+//        }
+//        Arrays.toString(tempAr);
         String str = String.format("CPU:\n PC = %10s SP = %10s\n R0 = %10s R1 = %10s\n R2 = %10s R3 = %10s\n",
                 Integer.toHexString(this.CPU[0]),Integer.toHexString(this.CPU[1]),Integer.toHexString(this.CPU[2]),
                 Integer.toHexString(this.CPU[3]),Integer.toHexString(this.CPU[4]),Integer.toHexString(this.CPU[5])) ;

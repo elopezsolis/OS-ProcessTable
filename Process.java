@@ -23,7 +23,8 @@ public class Process {
         this.program = p.program;
         this.usr = p.usr;
         this.status = p.status;
-        registers = p.registers;
+        this.registers = new int[6];
+        System.arraycopy(p.registers,0,this.registers,0,6);
 
     }
     public Process(int newPid, String program, String user, int status, int[] newRegisters){
@@ -80,7 +81,7 @@ public class Process {
     }
 
     public void setRegisters(int[] registers) {
-        this.registers = registers;
+        System.arraycopy(registers,0,this.registers,0,6);
     }
 
     /**
